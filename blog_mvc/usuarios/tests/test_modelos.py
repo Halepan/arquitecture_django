@@ -9,7 +9,7 @@ class testusuario(TestCase):
 
         self.assertEqual(userM.username, "henry")
         self.assertEqual(userM.email,"alejandrohenry@gmail.com")
-        self.assertEqual(userM.password, "henry12345678")
+        self.assertTrue(userM.check_password("henry12345678"))
 
     def test_have_email(self):
         #este test sirve para validar si genero un email en el usuario cuando se cree
