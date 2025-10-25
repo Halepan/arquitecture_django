@@ -12,8 +12,9 @@ class testusuario(TestCase):
         self.assertTrue(userM.check_password("henry12345678"))
 
     def test_have_email(self):
-        #este test sirve para validar si genero un email en el usuario cuando se cree
+        #este test sirve para validar si creo un email en el usuario cuando se cree
         userM = UsersPersonalizado_model.objects.create_user(username="henry",email = "alejandrohenry@gmail.com", password="henry12345678")
 
         self.assertTrue(userM.email)
+        self.assertFalse(userM.check_password("henry1234567"))
 
