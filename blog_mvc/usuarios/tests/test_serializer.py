@@ -5,12 +5,11 @@ from usuarios.serializer import Usuario_serializer as User_serializer
 
 class TestUserSerializer(TestCase):
     """
-    Tests completos para el UserSerializer
-    Seguimos el enfoque TDD: Tests primero, código después
+Test completos para un serializzador , al obbservar es una herencia de la clase TestCase
     """
     
     def setUp(self):
-        """Datos comunes para los tests"""
+        """Los datos comunes para todos los test se definen en setUp es como si fuera un constructor"""
         self.valid_user_data = {
             'username': 'testuser',
             'email': 'test@ejemplo.com',
@@ -19,14 +18,17 @@ class TestUserSerializer(TestCase):
     
     # ✅ TEST 1: Existencia del serializador
     def test_serializador_existe(self):
-        """Verificar que el serializador se puede importar y crear"""
+        """Este test es el encargado de verificar que el serializador se puede importar y crear"""
         serializer = User_serializer()
         self.assertIsNotNone(serializer)
         print("✅ ¡Serializador existe!")
     
     # ✅ TEST 2: Serialización (User → JSON)
     def test_serializacion_user_a_json(self):
-        """Verificar que un User se convierte correctamente a JSON"""
+        """Verificar que un User se convierte correctamente a JSON
+        se debe recordar que al utilizar un serializador.data las cosas
+        quedan guardadas en formato clave valor(las claves son los atributos del modelos y el serializador)"""
+
         user = User.objects.create_user(
             username="juan",
             email="juan@ejemplo.com",
@@ -45,7 +47,8 @@ class TestUserSerializer(TestCase):
     
     # ✅ TEST 3: Creación (JSON → User)
     def test_creacion_user_desde_json(self):
-        """Verificar que podemos crear un User desde JSON"""
+        """Verificar que podemos crear un User desde JSON, 
+        Recordar que las contraseñas se encriptan por lo que solo se pueden verificar mediante checkpasswod"""
         serializer = User_serializer(data=self.valid_user_data)
         
         is_valid = serializer.is_valid()
@@ -60,7 +63,9 @@ class TestUserSerializer(TestCase):
     
     # ✅ TEST 4: Validaciones
     def test_validacion_username_obligatorio(self):
-        """Verificar que username es obligatorio"""
+        """Verificar que username es obligatorio, esto se 
+        comprueba poniendo un assertFalse() para que al no ser valido este lo detecte como correcto"""
+
         invalid_data = {
             'email': 'test@ejemplo.com',
             'password': 'password123'
@@ -72,7 +77,8 @@ class TestUserSerializer(TestCase):
         print("✅ ¡Validación username obligatorio funciona!")
     
     def test_validacion_email_valido(self):
-        """Verificar que el email debe tener formato válido"""
+        """Verificar que el email debe tener formato válido,
+        con assert in se puede verificar si el error es de un tipo de atributo en especifico"""
         invalid_data = {
             'username': 'testuser',
             'email': 'email-invalido',
@@ -107,7 +113,10 @@ class TestUserSerializer(TestCase):
     
     # ✅ TEST 5: Actualización
     def test_actualizacion_user_sin_password(self):
-        """Verificar actualización sin cambiar password"""
+        """Verificar actualización sin cambiar password,
+        al utilizar un assert si se espera que no pase pones una , dentro del parentesis y pones el error esperado este 
+        no deberia saltar el error sino marcarte el error que esperabas """
+
         user = User.objects.create_user(
             username='original',
             email='original@ejemplo.com',
@@ -154,7 +163,9 @@ class TestUserSerializer(TestCase):
     
     # ✅ TEST 6: Campos específicos
     def test_password_es_write_only(self):
-        """Verificar que password es de solo escritura (no aparece en lectura)"""
+        """Verificar que password es de solo escritura (no aparece en lectura), 
+        al ustilizar assertNotIN se puede verificar si algo no esta en dicho lugar"""
+        
         user = User.objects.create_user(
             username='testuser',
             email='test@ejemplo.com',
